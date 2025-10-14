@@ -34,12 +34,10 @@ export const Contact = () => {
         "service_w39j0am", // Service ID
         "template_8jbbw5p", // Template ID
         {
-          from_name: formData.name,
-          from_email: formData.email,
-          reply_to: formData.email,
+          name: formData.name,
+          email: formData.email,
           message: formData.message,
-          to_email: "aayankumar312@gmail.com",
-          to_name: "Aayan Kumar",
+          title: "New Contact Form Submission",
         }
       );
 
