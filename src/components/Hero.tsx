@@ -147,6 +147,14 @@ export const Hero = () => {
             </div>
           </div>
         </div>
+
+        {/* Scroll indicator */}
+        <div className="absolute bottom-20 left-1/2 -translate-x-1/2 animate-bounce cursor-pointer" onClick={() => scrollToSection("about")}>
+          <div className="flex flex-col items-center gap-2">
+            <span className="text-sm text-muted-foreground">Scroll</span>
+            <ArrowDown className="w-6 h-6 text-primary" />
+          </div>
+        </div>
       </div>
     </section>
   );
