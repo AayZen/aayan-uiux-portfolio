@@ -112,7 +112,7 @@ export const Hero = () => {
               {floatingBadges.map((badge, index) => (
                 <div
                   key={index}
-                  className={`absolute ${badge.position} px-4 py-2 bg-card/80 backdrop-blur-md border border-primary/20 rounded-full text-sm font-medium shadow-lg animate-float hidden lg:block`}
+                  className={`absolute ${badge.position} px-4 py-2 bg-card/80 backdrop-blur-md border border-primary/20 rounded-full text-sm font-medium shadow-lg animate-float hidden lg:block z-20`}
                   style={{ animationDelay: badge.delay }}
                 >
                   {badge.text}
@@ -130,7 +130,7 @@ export const Hero = () => {
               </div>
 
               {/* Enhanced floating badge */}
-              <div className="absolute -bottom-8 -left-8 bg-gradient-to-br from-card to-card/80 backdrop-blur-xl border border-primary/20 rounded-2xl p-6 shadow-2xl animate-float lg:block hidden">
+              <div className="absolute -bottom-8 -left-8 bg-gradient-to-br from-card to-card/80 backdrop-blur-xl border border-primary/20 rounded-2xl p-6 shadow-2xl animate-float lg:block hidden z-20">
                 <div className="flex items-center gap-4">
                   <div className="relative">
                     <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-pink-500 flex items-center justify-center">
