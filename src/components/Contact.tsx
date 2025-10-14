@@ -113,7 +113,7 @@ export const Contact = () => {
               </a>
 
               <a 
-                href="tel:+917870705645"
+                href="tel:+917870765645"
                 className="flex items-center gap-4 p-4 bg-card/50 backdrop-blur-sm border border-primary/10 rounded-xl hover:border-primary/30 transition-all group"
               >
                 <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-500 to-primary flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -121,7 +121,7 @@ export const Contact = () => {
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Phone</p>
-                  <p className="font-semibold group-hover:text-primary transition-colors">+91 78707 5645</p>
+                  <p className="font-semibold group-hover:text-primary transition-colors">+91 78707 65645</p>
                 </div>
               </a>
 
