@@ -33,9 +33,9 @@ export const Hero = () => {
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:64px_64px]" />
       
       <div className="container max-w-7xl mx-auto relative z-10">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+        <div className="flex justify-center items-center">
           {/* Text Content */}
-          <div className="space-y-8 animate-fade-in">
+          <div className="space-y-8 animate-fade-in max-w-4xl text-center">
             {/* Badge */}
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/20 rounded-full backdrop-blur-sm">
               <Sparkles className="w-4 h-4 text-primary" />
@@ -82,7 +82,7 @@ export const Hero = () => {
               ))}
             </div>
 
-            <div className="flex flex-wrap gap-4 pt-4">
+            <div className="flex flex-wrap gap-4 pt-4 justify-center">
               <Button 
                 size="lg" 
                 className="bg-gradient-to-r from-primary to-pink-500 hover:opacity-90 text-white shadow-glow transition-all hover:scale-105 group"
@@ -99,51 +99,6 @@ export const Hero = () => {
               >
                 Get in Touch
               </Button>
-            </div>
-          </div>
-
-          {/* Profile Image */}
-          <div className="relative animate-scale-in lg:order-last">
-            <div className="relative w-full max-w-lg mx-auto">
-              {/* Large gradient glow */}
-              <div className="absolute -inset-4 bg-gradient-to-r from-primary via-pink-500 to-blue-500 rounded-3xl opacity-20 blur-3xl animate-pulse" />
-              
-              {/* Floating skill badges */}
-              {floatingBadges.map((badge, index) => (
-                <div
-                  key={index}
-                  className={`absolute ${badge.position} px-4 py-2 bg-card/80 backdrop-blur-md border border-primary/20 rounded-full text-sm font-medium shadow-lg animate-float hidden lg:block z-20`}
-                  style={{ animationDelay: badge.delay }}
-                >
-                  {badge.text}
-                </div>
-              ))}
-
-              {/* Image container with glassmorphism */}
-              <div className="relative rounded-3xl overflow-hidden border border-primary/20 shadow-2xl backdrop-blur-sm bg-gradient-to-br from-card/50 to-card/30">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-pink-500/10" />
-                <img 
-                  src={profileImage} 
-                  alt="Aayan Kumar - UI/UX Designer"
-                  className="w-full h-auto object-cover relative z-10"
-                />
-              </div>
-
-              {/* Enhanced floating badge */}
-              <div className="absolute -bottom-8 -left-8 bg-gradient-to-br from-card to-card/80 backdrop-blur-xl border border-primary/20 rounded-2xl p-6 shadow-2xl animate-float lg:block hidden z-20">
-                <div className="flex items-center gap-4">
-                  <div className="relative">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-pink-500 flex items-center justify-center">
-                      <Sparkles className="w-6 h-6 text-white" />
-                    </div>
-                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-card animate-pulse" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Currently</p>
-                    <p className="font-bold text-lg">Open to Work</p>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
