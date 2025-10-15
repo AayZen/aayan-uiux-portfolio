@@ -4,7 +4,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Mail, Phone, Linkedin, Github, Dribbble, Figma, FileDown, Loader2 } from "lucide-react";
-import emailjs from "@emailjs/browser";
 import { z } from "zod";
 
 // Contact form validation schema with comprehensive security checks
@@ -61,20 +60,26 @@ export const Contact = () => {
       // Use validated and sanitized data
       const validatedData = validationResult.data;
       
-      // Initialize EmailJS with your public key
-      emailjs.init("qkyq7sbpOxDucAnMS");
-
-      // Send email using EmailJS with validated data
-      await emailjs.send(
-        "service_w39j0am", // Service ID
-        "template_8jbbw5p", // Template ID
+      // Send email via secure Edge Function
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-contact-email`,
         {
-          name: validatedData.name,
-          email: validatedData.email,
-          message: validatedData.message,
-          title: "New Contact Form Submission",
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          },
+          body: JSON.stringify({
+            name: validatedData.name,
+            email: validatedData.email,
+            message: validatedData.message,
+          }),
         }
       );
+
+      if (!response.ok) {
+        throw new Error("Failed to send email");
+      }
 
       toast.success("Message sent successfully! I'll get back to you soon.");
       setFormData({ name: "", email: "", message: "" });
@@ -82,7 +87,7 @@ export const Contact = () => {
     } catch (error) {
       // Only log detailed errors in development environment
       if (import.meta.env.DEV) {
-        console.error("EmailJS Error:", error);
+        console.error("Email sending error:", error);
       }
       // Show user-friendly error message with fallback contact method
       toast.error("Failed to send message. Please try again or email me directly at aayankumar312@gmail.com");
