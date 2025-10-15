@@ -61,7 +61,7 @@ export const Contact = () => {
     {
       name: "GitHub",
       icon: Github,
-      url: "https://github.com/aayan312",
+      url: "https://github.com/AayZen",
       color: "hover:text-gray-400",
     },
     {
