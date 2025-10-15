@@ -5,6 +5,24 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Mail, Phone, Linkedin, Github, Dribbble, Figma, FileDown, Loader2 } from "lucide-react";
 import emailjs from "@emailjs/browser";
+import { z } from "zod";
+
+// Contact form validation schema with comprehensive security checks
+const contactSchema = z.object({
+  name: z.string()
+    .trim()
+    .min(1, "Name is required")
+    .max(100, "Name must be less than 100 characters")
+    .regex(/^[a-zA-Z\s'-]+$/, "Name can only contain letters, spaces, hyphens, and apostrophes"),
+  email: z.string()
+    .trim()
+    .email("Please enter a valid email address")
+    .max(255, "Email must be less than 255 characters"),
+  message: z.string()
+    .trim()
+    .min(10, "Message must be at least 10 characters")
+    .max(2000, "Message must be less than 2000 characters"),
+});
 
 export const Contact = () => {
   const [formData, setFormData] = useState({
@@ -13,39 +31,61 @@ export const Contact = () => {
     message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [lastSubmitTime, setLastSubmitTime] = useState(0);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Basic validation
-    if (!formData.name || !formData.email || !formData.message) {
-      toast.error("Please fill in all fields");
+    // Rate limiting: Prevent submissions within 30 seconds
+    const now = Date.now();
+    const timeSinceLastSubmit = now - lastSubmitTime;
+    if (timeSinceLastSubmit < 30000) {
+      const secondsRemaining = Math.ceil((30000 - timeSinceLastSubmit) / 1000);
+      toast.error(`Please wait ${secondsRemaining} seconds before sending another message`);
+      return;
+    }
+
+    // Comprehensive validation using Zod schema
+    const validationResult = contactSchema.safeParse(formData);
+    
+    if (!validationResult.success) {
+      // Show the first validation error to the user
+      const firstError = validationResult.error.errors[0];
+      toast.error(firstError.message);
       return;
     }
 
     setIsSubmitting(true);
 
     try {
+      // Use validated and sanitized data
+      const validatedData = validationResult.data;
+      
       // Initialize EmailJS with your public key
       emailjs.init("qkyq7sbpOxDucAnMS");
 
-      // Send email using EmailJS
+      // Send email using EmailJS with validated data
       await emailjs.send(
         "service_w39j0am", // Service ID
         "template_8jbbw5p", // Template ID
         {
-          name: formData.name,
-          email: formData.email,
-          message: formData.message,
+          name: validatedData.name,
+          email: validatedData.email,
+          message: validatedData.message,
           title: "New Contact Form Submission",
         }
       );
 
       toast.success("Message sent successfully! I'll get back to you soon.");
       setFormData({ name: "", email: "", message: "" });
+      setLastSubmitTime(now); // Update last submit time for rate limiting
     } catch (error) {
-      console.error("EmailJS Error:", error);
-      toast.error("Failed to send message. Please try again or contact me directly.");
+      // Only log detailed errors in development environment
+      if (import.meta.env.DEV) {
+        console.error("EmailJS Error:", error);
+      }
+      // Show user-friendly error message with fallback contact method
+      toast.error("Failed to send message. Please try again or email me directly at aayankumar312@gmail.com");
     } finally {
       setIsSubmitting(false);
     }
@@ -170,9 +210,12 @@ export const Contact = () => {
                 </label>
                 <Input
                   id="name"
+                  type="text"
                   placeholder="Your name"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  maxLength={100}
+                  required
                   className="bg-card/50 backdrop-blur-sm border-primary/10 focus:border-primary transition-colors"
                 />
               </div>
@@ -187,6 +230,8 @@ export const Contact = () => {
                   placeholder="your.email@example.com"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  maxLength={255}
+                  required
                   className="bg-card/50 backdrop-blur-sm border-primary/10 focus:border-primary transition-colors"
                 />
               </div>
@@ -197,10 +242,12 @@ export const Contact = () => {
                 </label>
                 <Textarea
                   id="message"
-                  placeholder="Tell me about your project..."
+                  placeholder="Tell me about your project... (10-2000 characters)"
                   rows={6}
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  maxLength={2000}
+                  required
                   className="bg-card/50 backdrop-blur-sm border-primary/10 focus:border-primary transition-colors resize-none"
                 />
               </div>
