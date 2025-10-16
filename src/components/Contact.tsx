@@ -171,7 +171,7 @@ export const Contact = () => {
               </a>
 
               <a 
-                href="https://enhancv-pdfs.s3.amazonaws.com/9477d7ac10d225b961f8c23a155ae4d0-pdf"
+                href="https://app.enhancv.com/share/3db8f78b/?utm_medium=growth&utm_campaign=share-resume&utm_source=dynamic"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-4 p-4 bg-card/50 backdrop-blur-sm border border-primary/10 rounded-xl hover:border-primary/30 transition-all group"
