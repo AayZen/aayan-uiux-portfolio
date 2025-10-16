@@ -1,15 +1,18 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-interface ContactEmailRequest {
-  name: string;
-  email: string;
-  message: string;
-}
+// Server-side validation schema
+const contactSchema = z.object({
+  name: z.string().trim().min(1, "Name is required").max(100, "Name too long")
+    .regex(/^[a-zA-Z\s'-]+$/, "Name contains invalid characters"),
+  email: z.string().trim().email("Invalid email format").max(255, "Email too long"),
+  message: z.string().trim().min(10, "Message too short").max(2000, "Message too long"),
+});
 
 const handler = async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
@@ -17,7 +20,26 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { name, email, message }: ContactEmailRequest = await req.json();
+    const body = await req.json();
+    
+    // Validate input with Zod
+    const validationResult = contactSchema.safeParse(body);
+    
+    if (!validationResult.success) {
+      console.warn("Validation failed:", validationResult.error.issues);
+      return new Response(
+        JSON.stringify({ error: "Invalid input data" }),
+        {
+          status: 400,
+          headers: {
+            "Content-Type": "application/json",
+            ...corsHeaders,
+          },
+        }
+      );
+    }
+    
+    const { name, email, message } = validationResult.data;
 
     console.log("Sending contact email for:", { name, email });
 
@@ -27,7 +49,16 @@ const handler = async (req: Request): Promise<Response> => {
 
     if (!EMAILJS_PUBLIC_KEY || !EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID) {
       console.error("Missing EmailJS credentials");
-      throw new Error("EmailJS configuration is incomplete");
+      return new Response(
+        JSON.stringify({ error: "Service configuration error" }),
+        {
+          status: 500,
+          headers: {
+            "Content-Type": "application/json",
+            ...corsHeaders,
+          },
+        }
+      );
     }
 
     const emailData = {
@@ -53,7 +84,16 @@ const handler = async (req: Request): Promise<Response> => {
     if (!response.ok) {
       const errorText = await response.text();
       console.error("EmailJS API error:", response.status, errorText);
-      throw new Error(`EmailJS failed with status ${response.status}`);
+      return new Response(
+        JSON.stringify({ error: "Failed to send email" }),
+        {
+          status: 500,
+          headers: {
+            "Content-Type": "application/json",
+            ...corsHeaders,
+          },
+        }
+      );
     }
 
     console.log("Email sent successfully");
@@ -71,7 +111,7 @@ const handler = async (req: Request): Promise<Response> => {
   } catch (error: any) {
     console.error("Error in send-contact-email function:", error);
     return new Response(
-      JSON.stringify({ error: error.message || "Failed to send email" }),
+      JSON.stringify({ error: "An error occurred while processing your request" }),
       {
         status: 500,
         headers: { "Content-Type": "application/json", ...corsHeaders },

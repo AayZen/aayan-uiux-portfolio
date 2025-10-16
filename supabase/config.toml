@@ -2,3 +2,4 @@ project_id = "placeholder"
 
 [functions.send-contact-email]
 verify_jwt = false
+rate_limit = 10
