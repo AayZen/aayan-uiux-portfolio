@@ -30,6 +30,7 @@ export const Navigation = () => {
     { name: "Services", id: "services" },
     { name: "Portfolio", id: "portfolio" },
     { name: "Contact", id: "contact" },
+    { name: "CV", id: "cv", isExternal: true, url: "https://app.enhancv.com/share/3db8f78b/?utm_medium=growth&utm_campaign=share-resume&utm_source=dynamic" },
   ];
 
   return (
@@ -53,14 +54,27 @@ export const Navigation = () => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
-              <button
-                key={link.id}
-                onClick={() => scrollToSection(link.id)}
-                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors relative group"
-              >
-                {link.name}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300" />
-              </button>
+              link.isExternal ? (
+                <a
+                  key={link.id}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors relative group"
+                >
+                  {link.name}
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300" />
+                </a>
+              ) : (
+                <button
+                  key={link.id}
+                  onClick={() => scrollToSection(link.id)}
+                  className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors relative group"
+                >
+                  {link.name}
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300" />
+                </button>
+              )
             ))}
           </div>
 
@@ -80,13 +94,26 @@ export const Navigation = () => {
           <div className="md:hidden py-4 animate-fade-in">
             <div className="flex flex-col gap-4">
               {navLinks.map((link) => (
-                <button
-                  key={link.id}
-                  onClick={() => scrollToSection(link.id)}
-                  className="text-left py-2 text-muted-foreground hover:text-primary transition-colors"
-                >
-                  {link.name}
-                </button>
+                link.isExternal ? (
+                  <a
+                    key={link.id}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-left py-2 text-muted-foreground hover:text-primary transition-colors"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    {link.name}
+                  </a>
+                ) : (
+                  <button
+                    key={link.id}
+                    onClick={() => scrollToSection(link.id)}
+                    className="text-left py-2 text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    {link.name}
+                  </button>
+                )
               ))}
             </div>
           </div>
