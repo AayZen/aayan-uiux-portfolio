@@ -17,7 +17,7 @@ export const About = () => {
     {
       degree: "10th Grade",
       institution: "Sun Beam Public School, Dehri on Sone, Bihar",
-      period: "2020 – 2021",
+      period: "2019 – 2020",
       icon: "📖",
     },
   ];
