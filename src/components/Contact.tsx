@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Mail, Phone, Linkedin, Github, Dribbble, Figma, FileDown, Loader2 } from "lucide-react";
 import { z } from "zod";
+import { supabase } from "@/integrations/supabase/client";
 
 // Contact form validation schema with comprehensive security checks
 const contactSchema = z.object({
@@ -61,24 +62,16 @@ export const Contact = () => {
       const validatedData = validationResult.data;
       
       // Send email via secure Edge Function
-      const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-contact-email`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-          },
-          body: JSON.stringify({
-            name: validatedData.name,
-            email: validatedData.email,
-            message: validatedData.message,
-          }),
-        }
-      );
+      const { data, error } = await supabase.functions.invoke('send-contact-email', {
+        body: {
+          name: validatedData.name,
+          email: validatedData.email,
+          message: validatedData.message,
+        },
+      });
 
-      if (!response.ok) {
-        throw new Error("Failed to send email");
+      if (error) {
+        throw error;
       }
 
       toast.success("Message sent successfully! I'll get back to you soon.");
